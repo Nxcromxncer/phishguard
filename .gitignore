@@ -1,0 +1,19 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Secrets - never commit
+.env
+
+# Large/derived artifacts (document provenance in README instead)
+backend/data/*
+!backend/data/.gitkeep
+backend/models/*
+!backend/models/.gitkeep
+
+# Editor / OS
+.idea/
+.vscode/
+.DS_Store

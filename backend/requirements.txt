@@ -1,0 +1,10 @@
+# PhishGuard backend dependencies (Phase 1).
+# Phase 3 will add: pandas, numpy, scikit-learn, joblib (explained when introduced).
+fastapi>=0.115
+uvicorn>=0.30
+pydantic>=2.7
+tldextract>=5.1
+
+# Test-only (kept here for a single install command; split later if desired).
+pytest>=8.0
+httpx>=0.27   # required by fastapi.testclient
