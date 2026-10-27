@@ -142,8 +142,8 @@ def test_oversized_chunked_body_without_content_length_is_413(client):
     assert response.status_code == 413
 
 
-def test_rate_limit_returns_429_with_retry_after():
-    with TestClient(create_app(Settings(rate_limit_per_minute=3))) as limited:
+def test_rate_limit_returns_429_with_retry_after(tmp_path):
+    with TestClient(create_app(Settings(rate_limit_per_minute=3, model_dir=str(tmp_path)))) as limited:
         codes = [scan(limited, "https://example.com/").status_code for _ in range(4)]
         assert codes == [200, 200, 200, 429]
         blocked = scan(limited, "https://example.com/")
@@ -202,8 +202,8 @@ def test_no_cors_headers_by_default(client):
     assert "access-control-allow-origin" not in response.headers
 
 
-def test_cors_only_for_explicitly_configured_origin():
-    cfg = Settings(rate_limit_per_minute=1000, cors_origins=("http://localhost:3000",))
+def test_cors_only_for_explicitly_configured_origin(tmp_path):
+    cfg = Settings(rate_limit_per_minute=1000, cors_origins=("http://localhost:3000",), model_dir=str(tmp_path))
     with TestClient(create_app(cfg)) as c:
         allowed = c.get("/health", headers={"Origin": "http://localhost:3000"})
         denied = c.get("/health", headers={"Origin": "https://evil.example"})

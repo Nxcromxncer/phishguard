@@ -68,10 +68,27 @@ class Settings:
     high_risk_threshold: int = 60
     """Rule score at/above which risk is reported as high."""
 
+    # --- ML model artifact (Phase 3) ----------------------------------------
+    model_dir: str | None = None
+    """Directory holding model.joblib + model_meta.json. None = backend/models."""
+
+    model_sha256: str | None = None
+    """Optional out-of-band pin. If set, the model file's SHA-256 must equal it.
+    This is what turns the integrity check into an authenticity check (see model.py)."""
+
+    allow_synthetic_model: bool = False
+    """Allow loading a model trained on synthetic data. Off by default so a demo
+    model can never silently influence verdicts."""
+
     # --- Logging ----------------------------------------------------------
     log_level: str = "INFO"
 
     def __post_init__(self) -> None:
+        if self.model_sha256 is not None and (
+            len(self.model_sha256) != 64
+            or any(c not in "0123456789abcdef" for c in self.model_sha256)
+        ):
+            raise ValueError("model_sha256 must be 64 lowercase hex characters")
         if not 0 < self.suspicious_threshold <= 100:
             raise ValueError("suspicious_threshold must be in 1..100")
         if not self.suspicious_threshold <= self.high_risk_threshold <= 100:
@@ -102,5 +119,8 @@ class Settings:
             high_risk_threshold=_int_env(
                 "PHISHGUARD_HIGH_RISK_THRESHOLD", defaults.high_risk_threshold
             ),
+            model_dir=os.environ.get("PHISHGUARD_MODEL_DIR") or None,
+            model_sha256=(os.environ.get("PHISHGUARD_MODEL_SHA256") or "").strip().lower() or None,
+            allow_synthetic_model=os.environ.get("PHISHGUARD_ALLOW_SYNTHETIC_MODEL", "") == "1",
             log_level=os.environ.get("PHISHGUARD_LOG_LEVEL", defaults.log_level).upper(),
         )

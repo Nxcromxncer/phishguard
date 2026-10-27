@@ -123,7 +123,11 @@ def create_app(
         ),
     )
     app.state.settings = settings
-    app.state.ml_service = ml_service or ModelService()
+    app.state.ml_service = ml_service or ModelService.from_directory(
+        settings.model_dir,
+        allow_synthetic=settings.allow_synthetic_model,
+        expected_sha256=settings.model_sha256,
+    )
     app.state.reputation_service = reputation_service or ReputationService()
     app.state.rate_limiter = SlidingWindowRateLimiter(
         settings.rate_limit_per_minute, 60.0, settings.rate_limit_max_clients

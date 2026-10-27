@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PhishGuard</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="brand">
+        <svg class="logo" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+          <path d="m8.5 12 2.5 2.5L15.5 9.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <div>
+          <h1>PhishGuard</h1>
+          <p class="tagline">URL risk assessment</p>
+        </div>
+      </header>
+
+      <form id="scan-form" novalidate>
+        <label for="url-input">URL to assess</label>
+        <input id="url-input" name="url" type="text" inputmode="url" autocomplete="off" spellcheck="false"
+               placeholder="https://example.com/path" aria-describedby="input-error" />
+        <p id="input-error" class="field-error" role="alert" hidden></p>
+        <div class="actions">
+          <button type="submit" id="scan-btn" class="primary">Scan</button>
+          <button type="button" id="tab-btn" class="secondary">Use current tab</button>
+        </div>
+      </form>
+
+      <section id="status" class="status" role="status" aria-live="polite" hidden></section>
+
+      <section id="result" class="result" aria-live="polite" hidden></section>
+
+      <footer class="disclaimer">
+        This is a risk assessment, not a guarantee. A result with no warnings does not mean a link is safe,
+        and a warning does not prove a site is malicious. Nothing is blocked automatically.
+      </footer>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>
